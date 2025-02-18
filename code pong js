@@ -1,0 +1,399 @@
+
+
+// x: coordonée du centre de la balle horizontalement
+var x;
+// y: coordonée du centre de la balle verticalement
+var y_2;
+var x_2;
+var y;
+var vitesse_h;
+var vitesse_v;
+var vitesse_h_2;
+var vitesse_v_2;
+var rayon = 20;
+var hauteur = 500;
+var largeur = 680;
+var longueur_b = 200;
+var hauteur_b = 15;
+var vitesse_b = 10;
+// x_b :coordonnées du bout en haut a gauche de la barre horizontalement
+var x_b = largeur / 2 - longueur_b / 2;
+// y_b : coordonnées du bout en haut a gauche de la barre verticalement
+var y_b = hauteur - hauteur_b - 20;
+var vie = 3;
+var taille_ext = 8;
+var x_heart = 10;
+var y_heart = 10;
+var space = 32;
+function setup() {
+  createCanvas(largeur, hauteur);
+
+  fill(255, 0, 0);
+  x = 450;
+  y = 250;
+  x_2 = 227;
+  y_2 = 250;
+  vitesse_h = 6;
+  vitesse_v = -6;
+  vitesse_h_2 = 6;
+  vitesse_v_2 = -6;
+}
+function draw() {
+  background(0, 0, 51);
+
+  if (vie == 0) {
+    // game over
+    fill("red");
+    textSize(32);
+    text(
+      "Game over",
+      largeur / 2 - textWidth("Game over") / 2,
+      hauteur / 2 - 32 / 2
+    );
+    textSize(32);
+    fill("red");
+    text(
+      "press space for restart...",
+      largeur / 2 - textWidth("press space for restart...") / 2,
+      hauteur - 32 / 2
+    );
+
+    if (keyIsDown(space)) {
+      vie = vie + 3;
+      print("keyIsDown");
+    }
+  } else {
+    // jeu
+    draw_heart();
+    draw_ball();
+    draw_ball_2();
+    // new_draw_ball(1)
+        // new_draw_ball(é)
+
+    draw_barre();
+    has_collision();
+  }
+}
+
+function draw_ball() {
+  x = x + vitesse_h;
+  y = y + vitesse_v;
+  if (vitesse_h > 0) {
+    vitesse_h += 0.001;
+  }
+  if (vitesse_v < 0) {
+    vitesse_v -= 0.001;
+  }
+
+  if (vitesse_v < 0) {
+    vitesse_v -= 0.001;
+  }
+
+  if (x >= largeur - rayon) {
+    vitesse_h = -vitesse_h;
+  }
+  if (y >= hauteur - rayon) {
+    vitesse_v = -vitesse_v;
+    vie = vie - 1;
+    x = 350;
+    y = 250;
+  }
+  if (x <= rayon) {
+    vitesse_h = -vitesse_h;
+  }
+  if (y <= rayon) {
+    vitesse_v = -vitesse_v;
+  }
+
+  ellipse(x, y, rayon * 2, rayon * 2);
+}
+function draw_ball_2() {
+  x_2 = x_2 + vitesse_h_2;
+  y_2 = y_2 + vitesse_v_2;
+  if (vitesse_h_2 > 0) {
+    vitesse_h_2 += 0.001;
+  }
+  if (vitesse_v_2 < 0) {
+    vitesse_v -= 0.001;
+  }
+
+  if (vitesse_v_2 < 0) {
+    vitesse_v_2 -= 0.001;
+  }
+
+  if (x_2 >= largeur - rayon) {
+    vitesse_h_2 = -vitesse_h_2;
+  }
+  if (y_2 >= hauteur - rayon) {
+    vitesse_v_2 = -vitesse_v_2;
+    vie = vie - 1;
+    x_2 = 227;
+    y_2 = 250;
+  }
+  if (x_2 <= rayon) {
+    vitesse_h_2 = -vitesse_h_2;
+  }
+  if (y_2 <= rayon) {
+    vitesse_v_2 = -vitesse_v_2;
+  }
+
+  ellipse(x_2, y_2, rayon * 2, rayon * 2);
+}
+function draw_barre() {
+  if (keyIsDown(LEFT_ARROW) && x_b >= 0) {
+    x_b -= vitesse_b;
+  }
+
+  if (keyIsDown(RIGHT_ARROW) && x_b + longueur_b <= 680) {
+    x_b += vitesse_b;
+  }
+  rect(x_b, y_b, longueur_b, hauteur_b);
+}
+
+function has_collision() {
+  if (
+    vitesse_v >= 0 &&
+    y_b <= y + rayon &&
+    x_b <= x + rayon &&
+    x_b + longueur_b >= x - rayon
+  ) {
+    vitesse_v = -vitesse_v;
+  }
+  if (
+    vitesse_v_2 >= 0 &&
+    y_b <= y_2 + rayon &&
+    x_b <= x_2 + rayon &&
+    x_b + longueur_b >= x_2 - rayon
+  ) {
+    vitesse_v_2 = -vitesse_v_2;
+  }
+}
+
+function heart(centres_du_cercle, y, taille) {
+  rotate((PI * 7) / 4.0);
+  rect(centres_du_cercle - taille / 2, y, taille, taille);
+  arc(centres_du_cercle, y, taille, taille, PI, 0);
+  arc(
+    centres_du_cercle + taille / 2,
+    y + taille / 2,
+    taille,
+    taille,
+    (6 * PI) / 4,
+    (2 * PI) / 4
+  );
+  rotate((-PI * 7) / 4.0);
+}
+function draw_heart() {
+  fill("red");
+  stroke("blanc");
+
+  if (vie == 3) {
+    heart(x_heart, y_heart + 11, taille_ext);
+    heart(x_heart - 14, y_heart + 25, taille_ext);
+    heart(x_heart - 29, y_heart + (40), taille_ext);
+  } else if (vie == 2) {
+    heart(x_heart, y_heart + 11, taille_ext);
+    heart(x_heart - 14, y_heart + 25, taille_ext);
+  } else if (vie == 1) {
+    heart(x_heart, y_heart + 11, taille_ext);
+  }
+}
+———————————————
+// x: coordonée du centre de la balle horizontalement
+var x = [450, 227];
+// y: coordonée du centre de la balle verticalement
+var y = [250, 250];
+// vx: vitesse horizontale
+var vx = [-6, -6];
+// vy: vitesse verticalement
+var vy = [6, 6];
+
+var rayon = 20;
+var hauteur = 500;
+var largeur = 680;
+var longueur_b = 200;
+var hauteur_b = 15;
+var vitesse_b = 10;
+// x_b :coordonnées du bout en haut a gauche de la barre horizontalement
+var x_b = largeur / 2 - longueur_b / 2;
+// y_b : coordonnées du bout en haut a gauche de la barre verticalement
+var y_b = hauteur - hauteur_b - 20;
+var vie = 3;
+var taille_ext = 8;
+var x_heart = 10;
+var y_heart = 10;
+var space = 32;
+function setup() {
+  createCanvas(largeur, hauteur);
+
+  fill(255, 0, 0);
+  // x = 450; ATTENTION
+  // x[0]=450;
+  y[0] = 250;
+  // x[1] = 227;
+  y[1] = 250;
+  vx[0] = 6;
+  vy[0] = -6;
+  vx[1] = 6;
+  vy[1] = -6;
+}
+function draw() {
+  background(0, 0, 51);
+
+  if (vie == 0) {
+    // game over
+    fill("red");
+    textSize(32);
+    text(
+      "Game over",
+      largeur / 2 - textWidth("Game over") / 2,
+      hauteur / 2 - 32 / 2
+    );
+    textSize(32);
+    fill("red");
+    text(
+      "press space for restart...",
+      largeur / 2 - textWidth("press space for restart...") / 2,
+      hauteur - 32 / 2
+    );
+
+    if (keyIsDown(space)) {
+      vie = vie + 3;
+      print("keyIsDown");
+    }
+  } else {
+    // jeu
+    draw_heart();
+    draw_ball();
+    draw_ball_2();
+    // new_draw_ball(1)
+    // new_draw_ball(é)
+
+    draw_barre();
+    has_collision();
+  }
+}
+
+function draw_ball() {
+  x[0] = x[0] + vx[0]; // ATTENNTION
+  y[0] = y[0] + vy[0];
+  if (vx[0] > 0) {
+    vx[0] += 0.001;
+  }
+  if (vy[0] < 0) {
+    vy[0] -= 0.001;
+  }
+
+  if (vy[0] < 0) {
+    vy[0] -= 0.001;
+  }
+
+  if (x[0] >= largeur - rayon) {
+    vx[0] = -vx[0];
+  }
+  if (y[0] >= hauteur - rayon) {
+    vy[0] = -vy[0];
+    vie = vie - 1;
+    x[0] = 350;
+    y[0] = 250;
+  }
+  if (x[0] <= rayon) {
+    vx[0] = -vx[0];
+  }
+  if (y[0] <= rayon) {
+    vy[0] = -vy[0];
+  }
+
+  ellipse(x[0], y[0], rayon * 2, rayon * 2);
+}
+function draw_ball_2() {
+  x[1] = x[1] + vx[1];
+  y[1] = y[1] + vy[1];
+  if (vx[1] > 0) {
+    vx[1] += 0.001;
+  }
+  if (vy[1] < 0) {
+    vy[0] -= 0.001;
+  }
+
+  if (vy[1] < 0) {
+    vy[1] -= 0.001;
+  }
+
+  if (x[1] >= largeur - rayon) {
+    vx[1] = -vx[1];
+  }
+  if (y[1] >= hauteur - rayon) {
+    vy[1] = -vy[1];
+    vie = vie - 1;
+    x[1] = 227;
+    y[1] = 250;
+  }
+  if (x[1] <= rayon) {
+    vx[1] = -vx[1];
+  }
+  if (y[1] <= rayon) {
+    vy[1] = -vy[1];
+  }
+
+  ellipse(x[1], y[1], rayon * 2, rayon * 2);
+}
+function draw_barre() {
+  if (keyIsDown(LEFT_ARROW) && x_b >= 0) {
+    x_b -= vitesse_b;
+  }
+
+  if (keyIsDown(RIGHT_ARROW) && x_b + longueur_b <= 680) {
+    x_b += vitesse_b;
+  }
+  rect(x_b, y_b, longueur_b, hauteur_b);
+}
+
+function has_collision() {
+  if (
+    vy[0] >= 0 &&
+    y_b <= y[0] + rayon &&
+    x_b <= x[0] + rayon &&
+    x_b + longueur_b >= x[0] - rayon
+  ) {
+    vy[0] = -vy[0];
+  }
+  if (
+    vy[1] >= 0 &&
+    y_b <= y[1] + rayon &&
+    x_b <= x[1] + rayon &&
+    x_b + longueur_b >= x[1] - rayon
+  ) {
+    vy[1] = -vy[1];
+  }
+}
+
+function heart(centres_du_cercle, y, taille) {
+  rotate((PI * 7) / 4.0);
+  rect(centres_du_cercle - taille / 2, y, taille, taille);
+  arc(centres_du_cercle, y, taille, taille, PI, 0);
+  arc(
+    centres_du_cercle + taille / 2,
+    y + taille / 2,
+    taille,
+    taille,
+    (6 * PI) / 4,
+    (2 * PI) / 4
+  );
+  rotate((-PI * 7) / 4.0);
+}
+function draw_heart() {
+  fill("red");
+  stroke("blanc");
+
+  if (vie == 3) {
+    heart(x_heart, y_heart + 11, taille_ext);
+    heart(x_heart - 14, y_heart + 25, taille_ext);
+    heart(x_heart - 29, y_heart + 40, taille_ext);
+  } else if (vie == 2) {
+    heart(x_heart, y_heart + 11, taille_ext);
+    heart(x_heart - 14, y_heart + 25, taille_ext);
+  } else if (vie == 1) {
+    heart(x_heart, y_heart + 11, taille_ext);
+  }
+}
